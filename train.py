@@ -6,21 +6,17 @@ import joblib
 import warnings
 warnings.filterwarnings("ignore")
 
-# ── 1. Load Data ───────────────────────────────────────────────────────────────
+# Loading Data
 print("Loading data...")
 df = pd.read_csv("online_retail_II.csv", encoding="latin-1")
 print(f"Dataset shape: {df.shape}")
 
-# ── 2. Clean Data ──────────────────────────────────────────────────────────────
+#Cleaning Data
 print("\nCleaning data...")
 
 # Drop missing customer IDs
 df = df.dropna(subset=["Customer ID"])
-
-# Remove cancellations (invoice starting with C)
 df = df[~df["Invoice"].astype(str).str.startswith("C")]
-
-# Remove negative quantities and prices
 df = df[df["Quantity"] > 0]
 df = df[df["Price"] > 0]
 
@@ -30,13 +26,13 @@ df["InvoiceDate"] = pd.to_datetime(df["InvoiceDate"])
 
 print(f"Cleaned shape: {df.shape}")
 
-# ── 3. RFM Analysis ────────────────────────────────────────────────────────────
+# RFM Analysis 
 print("\nCalculating RFM metrics...")
 
 snapshot_date = df["InvoiceDate"].max() + pd.Timedelta(days=1)
 
 rfm = df.groupby("Customer ID").agg({
-    "InvoiceDate": lambda x: (snapshot_date - x.max()).days,  # Recency
+    "InvoiceDate": lambda x: (snapshot_date - x.max()).days,    # Recency
     "Invoice":     "nunique",                                   # Frequency
     "TotalPrice":  "sum"                                        # Monetary
 }).reset_index()
@@ -45,16 +41,16 @@ rfm.columns = ["CustomerID", "Recency", "Frequency", "Monetary"]
 print(f"RFM shape: {rfm.shape}")
 print(rfm.describe())
 
-# ── 4. Scale Features ──────────────────────────────────────────────────────────
+# Scale Features
 scaler = StandardScaler()
 rfm_scaled = scaler.fit_transform(rfm[["Recency", "Frequency", "Monetary"]])
 
-# ── 5. Train KMeans ────────────────────────────────────────────────────────────
+#Train KMeans
 print("\nTraining KMeans...")
 kmeans = KMeans(n_clusters=4, random_state=42, n_init=10)
 rfm["Cluster"] = kmeans.fit_predict(rfm_scaled)
 
-# ── 6. Label Clusters ──────────────────────────────────────────────────────────
+#Label Clusters
 cluster_summary = rfm.groupby("Cluster").agg({
     "Recency":   "mean",
     "Frequency": "mean",
@@ -78,13 +74,13 @@ rfm["Segment"] = rfm["Cluster"].map(labels)
 print("\nSegment Distribution:")
 print(rfm["Segment"].value_counts())
 
-# ── 7. Save Everything ─────────────────────────────────────────────────────────
+#Save Everything 
 print("\nSaving artifacts...")
 joblib.dump(kmeans,  "kmeans_model.pkl")
 joblib.dump(scaler,  "rfm_scaler.pkl")
 rfm.to_csv("rfm_data.csv", index=False)
 
-print("\n✅ Done! Files saved:")
+print("\n Done! Files saved:")
 print("  - kmeans_model.pkl")
 print("  - rfm_scaler.pkl")
 print("  - rfm_data.csv")
