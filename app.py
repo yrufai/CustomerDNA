@@ -11,7 +11,7 @@ st.set_page_config(
     page_icon="🧬",
     layout="wide"
 )
-
+ 
 st.title("🧬 CustomerDNA")
 st.markdown("Decode your customer base — identify Champions, Loyalists, and At-Risk customers instantly.")
 st.divider()
