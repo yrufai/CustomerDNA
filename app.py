@@ -5,7 +5,7 @@ import plotly.express as px
 import plotly.graph_objects as go
 import joblib
 
-# ── Page config ────────────────────────────────────────────────────────────────
+# Page config 
 st.set_page_config(
     page_title="CustomerDNA",
     page_icon="🧬",
@@ -16,14 +16,14 @@ st.title("🧬 CustomerDNA")
 st.markdown("Decode your customer base — identify Champions, Loyalists, and At-Risk customers instantly.")
 st.divider()
 
-# ── Load data ──────────────────────────────────────────────────────────────────
+# Load data
 @st.cache_data
 def load_data():
     return pd.read_csv("rfm_data.csv")
 
 rfm = load_data()
 
-# ── Segment colors ─────────────────────────────────────────────────────────────
+# Segment colors
 colors = {
     "Champion Customers": "#2ecc71",
     "Loyal Customers":    "#3498db",
@@ -31,7 +31,7 @@ colors = {
     "At-Risk Customers":  "#e74c3c"
 }
 
-# ── Overview metrics ───────────────────────────────────────────────────────────
+# Overview metrics 
 st.subheader("Customer Overview")
 col1, col2, col3, col4 = st.columns(4)
 
@@ -46,7 +46,7 @@ for col, segment, icon in zip(
 
 st.divider()
 
-# ── Segment distribution chart ─────────────────────────────────────────────────
+#Segment distribution chart
 col_left, col_right = st.columns(2)
 
 with col_left:
@@ -74,7 +74,7 @@ with col_right:
 
 st.divider()
 
-# ── RFM Scatter ────────────────────────────────────────────────────────────────
+#RFM Scatter 
 st.subheader("RFM Analysis — Recency vs Monetary Value")
 fig_scatter = px.scatter(
     rfm, x="Recency", y="Monetary",
@@ -87,7 +87,7 @@ st.plotly_chart(fig_scatter, use_container_width=True)
 
 st.divider()
 
-# ── Segment deep dive ──────────────────────────────────────────────────────────
+# Segment deep dive
 st.subheader("Segment Deep Dive")
 selected = st.selectbox("Select a segment to explore:", rfm["Segment"].unique())
 
@@ -107,7 +107,7 @@ st.dataframe(
     use_container_width=True
 )
 
-# ── Predict segment for new customer ──────────────────────────────────────────
+# Predict segment for new customer
 st.divider()
 st.subheader("Predict Segment for New Customer")
 
@@ -124,7 +124,7 @@ segment_labels = {
     for cluster in rfm["Cluster"].unique()
 }
 
-if st.button("🧬 Analyze Customer", use_container_width=True):
+if st.button(" Analyze Customer", use_container_width=True):
     input_scaled = scaler.transform([[recency, frequency, monetary]])
     cluster      = model.predict(input_scaled)[0]
     segment      = segment_labels[cluster]
