@@ -53,8 +53,6 @@ Once RFM scores are computed, **K-Means clustering** groups customers into 4 seg
 
 ## Dashboard Features
 
-The app (`app.py`) has five interactive views:
-
 | View | Description |
 |---|---|
 | **Overview** | Headcount and percentage breakdown per segment |
@@ -62,6 +60,18 @@ The app (`app.py`) has five interactive views:
 | **RFM Scatter** | Recency vs. Monetary, bubble size = Frequency |
 | **Deep Dive** | Drill into any segment, see top customers and avg RFM stats |
 | **Predict** | Enter R/F/M values to classify any new customer in real time |
+
+---
+
+## Screenshots
+
+![Overview](images/overview.png)
+
+![Distribution](images/scatter.png)
+
+![Deep Dive](images/deep_dive.png)
+
+![Predict](images/predict.png)
 
 ---
 
@@ -79,7 +89,6 @@ The app (`app.py`) has five interactive views:
 ## Setup
 
 **Requirements:** Python 3.8+
-
 ```bash
 git clone https://github.com/yrufai/CustomerDNA.git
 cd CustomerDNA
@@ -100,7 +109,6 @@ streamlit run app.py
 ---
 
 ## Project Structure
-
 ```
 CustomerDNA/
 ├── app.py               # Streamlit dashboard
@@ -108,7 +116,8 @@ CustomerDNA/
 ├── requirements.txt     # Dependencies
 ├── rfm_data.csv         # Pre-computed RFM scores and segments
 ├── kmeans_model.pkl     # Trained K-Means model
-└── rfm_scaler.pkl       # Fitted StandardScaler
+├── rfm_scaler.pkl       # Fitted StandardScaler
+└── images/              # Dashboard screenshots
 ```
 
 ---
